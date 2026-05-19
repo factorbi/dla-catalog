@@ -1,2 +1,2 @@
 # DLA
-Complete List of Objects and Assets for the Deliverables License Agreement (DLA) for the systems: Microsip, Soft Restaurant, Intelisis, POSitouch & Aspel SAE
+Factor BI complete list of objects, routines and assets for the Deliverables License Agreement (DLA) for the source systems: Microsip, Soft Restaurant, Intelisis, POSitouch & Aspel SAE.
