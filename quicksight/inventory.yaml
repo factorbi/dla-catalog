@@ -1,0 +1,345 @@
+# =============================================================================
+# Factor BI — QuickSight Assets Inventory
+# =============================================================================
+# This file is the structured, machine-readable counterpart to ./README.md
+# It describes the QuickSight asset families that constitute Factor BI's
+# Platform, referred to in Annex B, Section 2 of the DLA.
+#
+# Versión Español: Este archivo es la contraparte estructurada del README.md de
+# esta carpeta. En caso de discrepancia interpretativa entre este archivo y
+# el Anexo B del DLA, prevalece el DLA.
+#
+# Document conventions:
+#   - YAML keys are in English (industry convention for machine-readable data).
+#   - YAML values are in Spanish (the canonical language of the DLA).
+#   - Stable IDs (e.g. QS-F01, DC-01) survive renames and translations.
+# =============================================================================
+
+catalog_metadata:
+  product_name: "Factor BI Plataforma de Dashboards"
+  asset_domain: "QuickSight"
+  licensor:
+    legal_name: "PANEL CRUNCH DATA ANALYTICS, S.A. DE C.V."
+    rfc: "PCD190724QD9"
+    brand: "Factor BI"
+  dla_reference:
+    annex: "B"
+    section: "2"
+  catalog_inception_date: "2026-05-19"
+  catalog_url: "https://github.com/factorbi/dla-catalog"
+  language:
+    keys: "en"
+    values: "es"
+
+# -----------------------------------------------------------------------------
+# Asset types covered by the DLA
+# -----------------------------------------------------------------------------
+asset_types:
+  covered:
+    - id: "DATASET"
+      name: "Dataset"
+      name_es: "Conjunto de Datos"
+    - id: "ANALYSIS"
+      name: "Analysis"
+      name_es: "Análisis"
+    - id: "DASHBOARD"
+      name: "Dashboard"
+      name_es: "Tablero"
+  excluded:
+    - id: "DATASOURCE"
+      name: "Data Source"
+      name_es: "Origen de Datos"
+      exclusion_reason: "Constituye una mera conexión de infraestructura, no expresión original del Licenciante."
+
+# -----------------------------------------------------------------------------
+# Embedded marker specification (criterion 2.C of Annex B)
+# -----------------------------------------------------------------------------
+embedded_marker:
+  parameter_name: "FactorBI"
+  parameter_static_value: "Factor BI Licensed Component | PANEL CRUNCH DATA ANALYTICS S.A. DE C.V. | DLA | https://github.com/factorbi/dla-catalog"
+  parameter_location_by_asset_type:
+    DATASET:
+      json_path: "DatasetParameters[].StringDatasetParameter"
+      retrieval_command: "aws quicksight describe-data-set"
+    ANALYSIS:
+      json_path: "Definition.ParameterDeclarations[].StringParameterDeclaration"
+      retrieval_command: "aws quicksight describe-analysis-definition"
+    DASHBOARD:
+      json_path: "Definition.ParameterDeclarations[].StringParameterDeclaration"
+      retrieval_command: "aws quicksight describe-dashboard-definition"
+  absence_clause: "La ausencia o remoción del marcador no excluye el carácter de Activo QuickSight Licenciado si éste se identifica conforme a los criterios 2.A, 2.B o 2.D del Anexo B."
+
+# -----------------------------------------------------------------------------
+# Identification criteria (criteria 2.A through 2.D of Annex B)
+# -----------------------------------------------------------------------------
+identification_criteria:
+  - id: "2.A"
+    name: "Inclusión en el Catálogo Público"
+    description: "El recurso corresponde a alguno de los productos descritos en este Catálogo Público, por correspondencia funcional y de diseño. Los nombres e identificadores del recurso no son criterio de identificación."
+  - id: "2.B"
+    name: "Pertenencia a una familia funcional"
+    description: "El recurso pertenece, por su propósito, contenido analítico y diseño, a alguna de las familias funcionales enumeradas en la sección 'families' de este archivo."
+  - id: "2.C"
+    name: "Marcadores embebidos"
+    description: "El recurso contiene el marcador embebido descrito en la sección 'embedded_marker' de este archivo."
+  - id: "2.D"
+    name: "Reconocimiento como activo preexistente"
+    description: "El recurso fue capturado en el inventario inicial a la fecha de firma del Anexo A correspondiente, conforme al criterio 2.D del Anexo B del DLA."
+
+# -----------------------------------------------------------------------------
+# Distinctive design characteristics
+# (referenced by each family via 'applicable_design_characteristics')
+# -----------------------------------------------------------------------------
+design_characteristics:
+  - id: "DC-01"
+    name: "Doble rango de fechas con comparativo inline"
+    description: "Mecánica de cuatro fechas (inicio y fin de un periodo actual, e inicio y fin de un periodo anterior) que permite establecer comparativos en línea con porcentajes de variación entre periodos."
+  - id: "DC-02"
+    name: "Flujo de análisis de lo general a lo particular"
+    description: "Organización que parte de indicadores clave (KPIs), continúa con representaciones gráficas de agrupación (donas por grupos, líneas, tipos de clientes, zonas) y concluye con tablas de detalle (clientes, vendedores, grupos, líneas, artículos)."
+  - id: "DC-03"
+    name: "Organización temática de pestañas (tabs)"
+    description: "Composición, secuencia y arquitectura de las hojas o pestañas que conforman cada tablero."
+
+# -----------------------------------------------------------------------------
+# Functional families (criterion 2.B of Annex B)
+# -----------------------------------------------------------------------------
+families:
+
+  - id: "QS-F01"
+    name: "Ventas"
+    purpose: "Análisis del ciclo de venta de mayoreo (cotizaciones, pedidos, remisiones, facturas y devoluciones)."
+    analysis_dimensions:
+      - "Vendedor"
+      - "Grupos"
+      - "Líneas"
+      - "Artículos"
+      - "Clientes"
+      - "Tipos de clientes"
+      - "Zonas de clientes"
+      - "Almacenes"
+      - "Sucursales"
+      - "Condiciones de pago"
+    analysis_metrics:
+      - "Importes de venta"
+      - "Devoluciones"
+      - "Descuentos"
+      - "Utilidad"
+      - "% margen"
+      - "Ticket promedio"
+      - "Costos"
+    time_analysis:
+      - "Fecha"
+      - "Día de la semana (lunes a domingo)"
+      - "Número de semana del año (1 a 52)"
+      - "Mes"
+      - "Año"
+    standard_tabs:
+      - "Ventas"
+      - "Ventas por Vendedor"
+      - "Acumulado del Año"
+      - "Devoluciones de Venta"
+      - "Pedidos Pendientes"
+      - "Cotizaciones Pendientes"
+      - "Remisiones Pendientes"
+      - "Comparativo Varios Años"
+    applicable_design_characteristics:
+      - "DC-01"
+      - "DC-02"
+      - "DC-03"
+
+  - id: "QS-F02"
+    name: "Punto de Venta"
+    purpose: "Análisis de venta de punto de venta (tickets de mostrador, devoluciones de mostrador, facturación global y sus devoluciones)."
+    analysis_dimensions:
+      - "Sucursal"
+      - "Caja"
+      - "Cajero"
+      - "Vendedor"
+      - "Cliente"
+      - "Almacenes"
+      - "Grupos"
+      - "Líneas"
+      - "Artículos"
+    analysis_metrics:
+      - "Importes de tickets de venta"
+      - "Devolución"
+      - "Descuentos"
+      - "Utilidad"
+      - "% margen"
+      - "Ticket promedio"
+      - "Costos"
+    time_analysis:
+      - "Fecha"
+      - "Día de la semana (lunes a domingo)"
+      - "Número de semana del año (1 a 52)"
+      - "Mes"
+      - "Año"
+    standard_tabs:
+      - "Notas y Devoluciones"
+      - "Acumulado del Año"
+      - "Sucursales"
+      - "Cajas"
+      - "Cajeros"
+      - "Vendedores"
+      - "Facturas y Notas de Crédito"
+      - "Devoluciones de Venta"
+    applicable_design_characteristics:
+      - "DC-01"
+      - "DC-02"
+      - "DC-03"
+
+  - id: "QS-F03"
+    name: "Consolidado Punto de Venta y Ventas"
+    purpose: "Consolida los módulos de Ventas y Punto de Venta en una vista integrada con comparativos, incluyendo las mismas dimensiones y métricas de los dos dashboards que consolida."
+    inherits_from:
+      - "QS-F01"
+      - "QS-F02"
+    standard_tabs:
+      - "Ventas"
+      - "Acumulado del Año"
+      - "Devoluciones de Venta"
+      - "Comparativo Varios Años"
+    applicable_design_characteristics:
+      - "DC-01"
+      - "DC-02"
+      - "DC-03"
+
+  - id: "QS-F04"
+    name: "Inventarios y Compras"
+    purpose: "Análisis de existencias globales y por almacén, días de inventario (days at hand), inventario por proveedores, antigüedad de inventario, órdenes de compra, históricos de compra y estadísticas mensuales."
+    analysis_metrics:
+      - "Venta"
+      - "Devoluciones"
+      - "Compras"
+      - "Devoluciones de compra"
+      - "Costo promedio"
+      - "Último costo"
+      - "Valuación a costo promedio"
+      - "Valuación a último costo"
+      - "Inventario inicial"
+      - "Inventario final"
+      - "Máximo"
+      - "Mínimo"
+      - "Punto de reorden"
+    standard_tabs:
+      - "Inventario Global"
+      - "Inventario por Almacenes"
+      - "Días de Inventario"
+      - "Días de Inventario por Almacén"
+      - "Inventario por Proveedores"
+      - "Antigüedad del Inventario"
+      - "Antigüedad por Almacén"
+      - "Gráficas Estadísticas"
+      - "Órdenes de Compra"
+      - "Histórico de Compras"
+      - "Ventas y Compras por Semana"
+    applicable_design_characteristics:
+      - "DC-01"
+      - "DC-02"
+      - "DC-03"
+
+  - id: "QS-F05"
+    name: "Estados Financieros"
+    purpose: "Estados de resultados y balance general en vista mes a mes (mensual), análisis gráficos de rubros financieros relevantes y vistas 80-20 (pareto)."
+    analysis_dimensions:
+      - "Cuenta"
+      - "Centro de costo (departamento)"
+      - "Póliza"
+      - "Folio"
+      - "Descripción"
+    standard_tabs:
+      - "Estados de Resultados (gráficos)"
+      - "Estados de Resultados (analítico)"
+      - "Estado de Resultados (tablas)"
+      - "Balance General"
+      - "Clientes y Proveedores"
+      - "Auxiliar"
+    applicable_design_characteristics:
+      - "DC-02"
+      - "DC-03"
+
+  - id: "QS-F06"
+    name: "Flujo de Efectivo"
+    purpose: "Análisis de cuentas por cobrar, cuentas por pagar, antigüedad de saldos (aging), cobranza, pagos, anticipos, y vista resumen de flujo de efectivo con sus respectivos detalles."
+    analysis_dimensions:
+      - "Cliente"
+      - "Concepto"
+      - "Tipo cliente"
+      - "Vendedor"
+      - "Almacén"
+      - "Plazo de antigüedad"
+      - "Moneda"
+      - "Condición de pago"
+      - "Proveedor"
+      - "Folio"
+    standard_tabs:
+      - "Flujo de Efectivo"
+      - "Cuentas por Cobrar"
+      - "Cuentas por Pagar"
+      - "Cobranza"
+      - "Pagos"
+      - "Tendencia de Cartera"
+    applicable_design_characteristics:
+      - "DC-02"
+      - "DC-03"
+
+  - id: "QS-F07"
+    name: "Restaurantes"
+    purpose: "Análisis para cadenas de restaurantes, con tickets de venta, devoluciones, movimientos de caja, compras y gastos."
+    analysis_dimensions:
+      - "Tienda (establecimiento/sucursal)"
+      - "Turno"
+      - "Área"
+      - "Mesero"
+      - "Categoría"
+      - "Platillo"
+      - "Tipo de descuento"
+      - "Caja"
+      - "Forma de pago"
+    analysis_metrics:
+      - "Importes de venta"
+      - "Devoluciones"
+      - "Descuentos"
+      - "Costos"
+      - "Utilidad"
+      - "% margen"
+      - "Ticket promedio"
+      - "% mix alcohol (o café o un grupo de alimento importante)"
+      - "# invitados (comensales)"
+      - "# cheques (tickets)"
+    standard_tabs:
+      - "Venta Diaria"
+      - "Resumen por Semana"
+      - "Resumen Anual"
+      - "Comparativo de Tiendas"
+      - "Cajas"
+      - "Utilidad: Ventas, Compras, Gastos"
+      - "Desglose Venta Diaria"
+      - "Actualización de Tiendas"
+    applicable_design_characteristics:
+      - "DC-01"
+      - "DC-02"
+      - "DC-03"
+
+# -----------------------------------------------------------------------------
+# Verification commands (informational; for use by clients and auditors)
+# -----------------------------------------------------------------------------
+verification_commands:
+  list_resources:
+    - "aws quicksight list-data-sets --aws-account-id <ACCOUNT_ID>"
+    - "aws quicksight list-analyses --aws-account-id <ACCOUNT_ID>"
+    - "aws quicksight list-dashboards --aws-account-id <ACCOUNT_ID>"
+  inspect_definition:
+    - "aws quicksight describe-data-set --aws-account-id <ACCOUNT_ID> --data-set-id <ID>"
+    - "aws quicksight describe-analysis-definition --aws-account-id <ACCOUNT_ID> --analysis-id <ID>"
+    - "aws quicksight describe-dashboard-definition --aws-account-id <ACCOUNT_ID> --dashboard-id <ID>"
+
+# -----------------------------------------------------------------------------
+# Contact
+# -----------------------------------------------------------------------------
+contact:
+  email: "legal@factorbi.com"
+  attention: "Representante Legal de PANEL CRUNCH DATA ANALYTICS, S.A. DE C.V."
+
+# End of file
