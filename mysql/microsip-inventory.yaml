@@ -1,0 +1,1477 @@
+# =============================================================================
+# Factor BI — MySQL Routines Inventory (Microsip)
+# =============================================================================
+# This file lists every MySQL object (PROCEDURE, FUNCTION, VIEW, EVENT)
+# that Factor BI develops, deploys or maintains as part of its Platform
+# for the Microsip source system.
+#
+# Companion document: ./README.md (human-readable description of the
+# six functional families that span all source systems).
+#
+# In case of interpretive discrepancy between this file and Annex B of
+# the DLA, the DLA prevails.
+#
+# Document conventions:
+#   - YAML keys are in English (industry convention for machine-readable data).
+#   - YAML values are in Spanish (the canonical language of the DLA).
+#   - Stable IDs (e.g. FAM-01) survive renames and translations.
+# =============================================================================
+
+catalog_metadata:
+  product_name: "Factor BI Plataforma de Dashboards"
+  asset_domain: "MySQL"
+  source_system: "Microsip"
+  licensor:
+    legal_name: "PANEL CRUNCH DATA ANALYTICS, S.A. DE C.V."
+    rfc: "PCD190724QD9"
+    brand: "Factor BI"
+  dla_reference:
+    annex: "B"
+    section: "1"
+  catalog_inception_date: "2026-05-19"
+  catalog_url: "https://github.com/factorbi/dla-catalog"
+  language:
+    keys: "en"
+    values: "es"
+
+# -----------------------------------------------------------------------------
+# Object types covered by the DLA
+# -----------------------------------------------------------------------------
+object_types:
+  covered:
+    - id: "PROCEDURE"
+      count: 105
+    - id: "FUNCTION"
+      count: 21
+    - id: "VIEW"
+      count: 91
+    - id: "EVENT"
+      count: 2
+  total_objects: 219
+
+# -----------------------------------------------------------------------------
+# Embedded marker specification (criterion 1.C of Annex B)
+# -----------------------------------------------------------------------------
+embedded_marker:
+  comment_text: "Factor BI Licensed Component"
+  inline_sql_legend: "Factor BI Licensed Component | PANEL CRUNCH DATA ANALYTICS S.A. DE C.V. | DLA | https://github.com/factorbi/dla-catalog"
+  marker_location_by_object_type:
+    PROCEDURE:
+      comment_attribute_query: "INFORMATION_SCHEMA.ROUTINES.ROUTINE_COMMENT"
+      inline_marker_visible_via: "SHOW CREATE PROCEDURE"
+    FUNCTION:
+      comment_attribute_query: "INFORMATION_SCHEMA.ROUTINES.ROUTINE_COMMENT"
+      inline_marker_visible_via: "SHOW CREATE FUNCTION"
+    EVENT:
+      comment_attribute_query: "INFORMATION_SCHEMA.EVENTS.EVENT_COMMENT"
+      inline_marker_visible_via: "SHOW CREATE EVENT"
+    VIEW:
+      comment_attribute_query: null  # MySQL does not support COMMENT on VIEWs
+      inline_marker_visible_via: null  # MySQL does not preserve inline comments inside VIEW bodies once deployed
+      note: "Para VIEWs, los marcadores embebidos sólo subsisten en el código fuente versionado por el Licenciante. La identificación se apoya prioritariamente en los criterios 1.A y 1.B."
+  absence_clause: "La ausencia o remoción del marcador no excluye el carácter de Rutina MySQL Licenciada si el objeto se identifica conforme a los criterios 1.A, 1.B o 1.D del Anexo B."
+
+# -----------------------------------------------------------------------------
+# Identification criteria (criteria 1.A through 1.D of Annex B)
+# -----------------------------------------------------------------------------
+identification_criteria:
+  - id: "1.A"
+    name: "Inclusión en el Catálogo Público"
+    description: "El objeto, identificado por su nombre exacto, aparece en la sección 'objects' de este archivo (o en el commit history del repositorio Git, posterior al 19 de mayo de 2026)."
+  - id: "1.B"
+    name: "Pertenencia a una familia funcional"
+    description: "El objeto pertenece, por su propósito y comportamiento, a alguna de las familias funcionales enumeradas en la sección 'families' de este archivo."
+  - id: "1.C"
+    name: "Marcadores Embebidos"
+    description: "El objeto contiene el marcador embebido descrito en la sección 'embedded_marker' de este archivo."
+  - id: "1.D"
+    name: "Reconocimiento como objeto preexistente"
+    description: "El objeto fue capturado en el inventario inicial a la fecha de firma del Anexo A correspondiente, conforme al criterio 1.D del Anexo B del DLA."
+
+# -----------------------------------------------------------------------------
+# Functional families (criterion 1.B of Annex B)
+# Same families apply to all Source Systems; see ./README.md for full
+# description.
+# -----------------------------------------------------------------------------
+families:
+  - id: "FAM-01"
+    name: "Utilitarios de Esquema"
+    description: "Procedimientos auxiliares para manipulación dinámica de la estructura del esquema (creación, alteración y eliminación de tablas, columnas, índices y llaves primarias; renombrados; operaciones de adaptación multi-tenant)."
+    transversal_to_source_systems: true
+    object_count_in_this_inventory: 11
+  - id: "FAM-02"
+    name: "Dimensiones de Tiempo"
+    description: "Procedimientos y funciones de generación de calendarios y dimensiones de tiempo, navegación temporal, cálculos de aging por fecha, year-month, year-to-date y agrupaciones equivalentes."
+    transversal_to_source_systems: true
+    object_count_in_this_inventory: 17
+  - id: "FAM-03"
+    name: "DWH (Data Warehouse)"
+    description: "Procedimientos, vistas, funciones y eventos asociados a la ingestión, transformación, carga, post-procesamiento, consolidación multi-empresa, tratamiento fiscal y cálculo de indicadores de negocio dentro del Almacén de Datos construido en MySQL, alimentado desde el Sistema de Origen."
+    transversal_to_source_systems: false
+    object_count_in_this_inventory: 182
+  - id: "FAM-04"
+    name: "Funciones Auxiliares"
+    description: "Funciones de manipulación de cadenas y números, extracción de JSON, cálculos de tipo de cambio y utilidades de propósito general aplicables a cualquier Sistema de Origen."
+    transversal_to_source_systems: true
+    object_count_in_this_inventory: 6
+  - id: "FAM-05"
+    name: "Instalación y Eventos Programados"
+    description: "Procedimientos y eventos asociados a la instalación inicial del esquema y a tareas de mantenimiento programado."
+    transversal_to_source_systems: true
+    object_count_in_this_inventory: 2
+  - id: "FAM-06"
+    name: "Otros Utilitarios"
+    description: "Procedimientos de propósito general utilizados internamente por las demás familias (control de flujo, depuración, registro de actividad y similares)."
+    transversal_to_source_systems: true
+    object_count_in_this_inventory: 1
+
+# -----------------------------------------------------------------------------
+# Object inventory
+# -----------------------------------------------------------------------------
+# Each entry below lists one MySQL object that constitutes a Factor BI
+# Licensed Routine for the Microsip source system. Objects in the
+# 'consolidado' folder are the multi-company consolidated variants of
+# their root counterparts.
+# -----------------------------------------------------------------------------
+objects:  # total: 219
+  - type: "PROCEDURE"
+    name: "sp_addPrimaryKey"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "sp_AlterTable"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "sp_alterTableAddTenant"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "sp_checkTableExistence"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "sp_createIndex"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "sp_dropColumn"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "sp_dropIndex"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "sp_dropPrimaryKey"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "sp_modifyColumn"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "sp_renameColumn"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "sp_renameTable"
+    source_file: "00-sp_createIndex.sql"
+    folder: "root"
+    family: "FAM-01"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCreateTime"
+    source_file: "10-time.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCreateYM"
+    source_file: "10-time.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnAgingDate"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnDateInfo"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnDayOrder"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnDayOrder30"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnFirstDayOfWeek"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnInvMesesAdelante"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnInvMesesAtras"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnLastDayOfWeek"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnServiceDate"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnWeekName"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnYmControl"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnYmYTD"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-02"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnAgingDate"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-02"
+    is_consolidated: true
+  - type: "FUNCTION"
+    name: "fnDateInfo"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-02"
+    is_consolidated: true
+  - type: "FUNCTION"
+    name: "fnServiceDate"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-02"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spABC_calc"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spAnalyzeSyncTables"
+    source_file: "60-spPostMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spBibliaInv"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spBibliaInvAlmacen"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spBiCFDIExplotarMicrosip"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spBiCFDIExplotarMicrosipFechas"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spBiCFDIExplotarMicrosipInicioFin"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCalcBiModulosGrupo1"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCalcBiModulosGrupo2"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCalcBiModulosGrupo3"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCalcCorteGrupo3"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCamposParticulares"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCorteCx"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCorteVentas"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCreateTempTables"
+    source_file: "15-tablasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spCreateTempTablesHistorico"
+    source_file: "15-tablasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spDropTempTables"
+    source_file: "15-tablasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spDropTempTablesHistorico"
+    source_file: "15-tablasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spFactorySettings"
+    source_file: "15-tablasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spImportarEqTable"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spImportarFlujoCaja"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spImportarParametrosCx"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spInvAntiguedad"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spInvAntiguedadAlmacen"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spLimpiarTablas"
+    source_file: "15-tablasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spModulosGrupoLote"
+    source_file: "spModulosGrupoLote.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spPagosRecordarComplemento"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spPagosRevisarComplemento"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spPostFinal"
+    source_file: "60-spPostMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spPostInitial"
+    source_file: "60-spPostMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spProyectoResumen"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spProyectoResumen"
+    source_file: "spModulosGrupoLote.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesCatalogos"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesCompras"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesCompras_antes"
+    source_file: "49-spEspecialesMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesCompras_despues"
+    source_file: "49-spEspecialesMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesConta"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesCx"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesFinal"
+    source_file: "49-spEspecialesMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesFiscal"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesHistorico"
+    source_file: "52-spBIMicrosipHistorico.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesListaNegra"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesVentas"
+    source_file: "50-spBIMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesVentas_antes"
+    source_file: "49-spEspecialesMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesVentas_despues"
+    source_file: "49-spEspecialesMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spReportesVentasBig"
+    source_file: "51-spBIMicrosipBig.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spRequestIngestion"
+    source_file: "60-spPostMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "xpPostFinal"
+    source_file: "60-spPostMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "xpPostInitial"
+    source_file: "60-spPostMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "PROCEDURE"
+    name: "spAnalyzeSyncTables"
+    source_file: "consolidado/60-spPostMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spBibliaInv"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spBibliaInvAlmacen"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spBiCFDIExplotarMicrosip"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spBiCFDIExplotarMicrosipFechas"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spBiCFDIExplotarMicrosipInicioFin"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spBiCFDIExplotarMicrosipTenantInicioFin"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spCalcBiModulosGrupo1"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spCalcCorteGrupo3"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spCamposParticulares"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spCorteCx"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spCreateTempTables"
+    source_file: "consolidado/15-tablasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spCreateTempTablesHistorico"
+    source_file: "consolidado/15-tablasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spFactorySettings"
+    source_file: "consolidado/15-tablasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spImportarEqTable"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spImportarFlujoCaja"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spInvAntiguedad"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spInvAntiguedadAlmacen"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spLoteResumen"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spLoteResumenBig"
+    source_file: "consolidado/51-spBIMicrosipBigConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spModulosGrupoLote"
+    source_file: "consolidado/spModulosGrupoLoteConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spPagosRecordarComplemento"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spPagosRevisarComplemento"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spPostFinal"
+    source_file: "consolidado/60-spPostMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spPostInitial"
+    source_file: "consolidado/60-spPostMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spProyectoResumen"
+    source_file: "consolidado/spModulosGrupoLoteConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesCatalogos"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesCompras"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesCompras_antes"
+    source_file: "consolidado/49-spEspecialesMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesCompras_despues"
+    source_file: "consolidado/49-spEspecialesMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesConta"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesCx"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesFinal"
+    source_file: "consolidado/49-spEspecialesMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesFiscal"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesHistorico"
+    source_file: "consolidado/52-spBIMicrosipHistoricoConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesListaNegra"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesVentas"
+    source_file: "consolidado/50-spBIMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesVentas_antes"
+    source_file: "consolidado/49-spEspecialesMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesVentas_despues"
+    source_file: "consolidado/49-spEspecialesMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "spReportesVentasBig"
+    source_file: "consolidado/51-spBIMicrosipBigConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "xpPostFinal"
+    source_file: "consolidado/60-spPostMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "xpPostInitial"
+    source_file: "consolidado/60-spPostMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biAlmacenes"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biArticulos"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biArticulosAlmacen"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biBibliaInv"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biBibliaInvAlmacen"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biBibliaInvFechas"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biClientes"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biComprasImpuestos2"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biContaAcumCierre"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biContaAcumNiveles"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biContaDetalle"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biContaDetalleSub"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biContaEliminarPolizas"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biContaPresupuestoNivelAuxiliar"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "bicortegrupo3"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biCxcConcepto"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biCxcCreditoSaldo"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biCxpAnticipoSaldo"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biCxpConcepto"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biCxpVencimientoSub"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biCxpVencimientoSub2"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biEqTableDifHist"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biInvProveedor"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biLogPost"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "bimodulosgrupo1"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "bimodulosgrupo2"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "bimodulosgrupo3"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biPresupuesto"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biPresupuestoSub"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biProveedores"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biProyectoCxpConcepto"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biSAT69CFDIsRecibidos"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biSATFirmesNoLocalizadosComprasYCxp"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biSyncInfo"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biTesoreria"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biTesoreriaSaldo"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biVendedores"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwComprasDetalle"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwCxc"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwCxcAplica"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwCxp"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwCxpAplica"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwEstatusCfdi"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwInvAntiguedad"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwInvAntiguedadAlmacen"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwLogEstatusCfdi"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwMergePV_VEDetalle"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwPolizasCfdiCancelado"
+    source_file: "35-fiscalMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwPuntoVentaDetalle"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "vwVentasDetalle"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-03"
+    is_consolidated: false
+  - type: "VIEW"
+    name: "biAlmacenes"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biArticulos"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biArticulosAlmacen"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biBibliaInv"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biBibliaInvAlmacen"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biBibliaInvFechas"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biClientes"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biContaAcumCierre"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biContaAcumNivelAuxiliar"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biContaAcumNiveles"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biContaAcumSDNivelAuxiliar"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biContaDetalle"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biContaDetalleSub"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biContaPresupuestoNiveles"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "bicortegrupo3"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biCxcCreditoSaldo"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biCxcVencimientoSub"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biCxcVencimientoSub2"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biCxpAnticipoSaldo"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biCxpVencimientoSub"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biCxpVencimientoSub2"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biEqTableDifHist"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biInvProveedor"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biLogPost"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "bimodulosgrupo1"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "bimodulosgrupo2"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biPresupuesto"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biPresupuestoSub"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biProveedores"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biProyectoCxpConcepto"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biSAT69CFDIsRecibidos"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biSATFirmesNoLocalizadosComprasYCxp"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "biTesoreriaSaldo"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "vwComprasDetalle"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "vwCxc"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "vwCxcAplica"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "vwCxp"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "vwCxpAplica"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "vwMergePV_VEDetalle"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "vwPolizasCfdiCancelado"
+    source_file: "consolidado/35-fiscalMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "VIEW"
+    name: "vwVentasDetalle"
+    source_file: "consolidado/20-vistasMicrosipConsolidado.sql"
+    folder: "consolidado"
+    family: "FAM-03"
+    is_consolidated: true
+  - type: "FUNCTION"
+    name: "fnExtractJson"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-04"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnGrabChars"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-04"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnGrabNums"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-04"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnRemoveAccents"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-04"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnRemoveSpecialCharacters"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-04"
+    is_consolidated: false
+  - type: "FUNCTION"
+    name: "fnTipoCambioUSD"
+    source_file: "20-vistasMicrosip.sql"
+    folder: "root"
+    family: "FAM-04"
+    is_consolidated: false
+  - type: "EVENT"
+    name: "instalacionInicial"
+    source_file: "instalacion-1a-vez.sql"
+    folder: "root"
+    family: "FAM-05"
+    is_consolidated: false
+  - type: "EVENT"
+    name: "instalacionInicial"
+    source_file: "consolidado/instalacion-1a-vez.sql"
+    folder: "consolidado"
+    family: "FAM-05"
+    is_consolidated: true
+  - type: "PROCEDURE"
+    name: "dowhile"
+    source_file: "10-time.sql"
+    folder: "root"
+    family: "FAM-06"
+    is_consolidated: false
+
+# -----------------------------------------------------------------------------
+# Verification commands (informational; for use by clients and auditors)
+# -----------------------------------------------------------------------------
+verification_commands:
+  list_marker_comment_in_routines: |
+    SELECT ROUTINE_SCHEMA, ROUTINE_NAME, ROUTINE_TYPE, ROUTINE_COMMENT
+    FROM INFORMATION_SCHEMA.ROUTINES
+    WHERE ROUTINE_COMMENT LIKE '%Factor BI Licensed Component%';
+  list_marker_comment_in_events: |
+    SELECT EVENT_SCHEMA, EVENT_NAME, EVENT_COMMENT
+    FROM INFORMATION_SCHEMA.EVENTS
+    WHERE EVENT_COMMENT LIKE '%Factor BI Licensed Component%';
+  inspect_object_definition:
+    - "SHOW CREATE PROCEDURE <schema>.<name>;"
+    - "SHOW CREATE FUNCTION  <schema>.<name>;"
+    - "SHOW CREATE VIEW      <schema>.<name>;"
+    - "SHOW CREATE EVENT     <schema>.<name>;"
+
+# -----------------------------------------------------------------------------
+# Contact
+# -----------------------------------------------------------------------------
+contact:
+  email: "legal@factorbi.com"
+  attention: "Representante Legal de PANEL CRUNCH DATA ANALYTICS, S.A. DE C.V."
+
+# End of file
